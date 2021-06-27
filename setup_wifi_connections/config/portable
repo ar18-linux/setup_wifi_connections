@@ -1,0 +1,22 @@
+#!/bin/bash
+
+cd "/tmp"
+rm -rf "/tmp/setup_wifi_connections"
+mkdir -p "/tmp/setup_wifi_connections"
+
+cf "/tmp/setup_wifi_connections"
+
+git clone http://github.com/ar18-linux/secrets
+git clone http://github.com/ar18-linux/gpg
+
+rm -rf "/tmp/setup_wifi_connections/wifi_passwords"
+"/tmp/setup_wifi_connections/gpg/gpg/decrypt.sh" "/tmp/setup_wifi_connections/secrets/secrets/wifi_passwords.gpg" "/tmp/setup_wifi_connections/wifi_passwords" "${ar18_sudo_password}"
+
+while read line; do
+  old_ifs="${IFS}"
+  IFS=$'\t' 
+  arr=(${line})
+  sudo nmcli device wifi con "${arr[0]}" password "${arr[1]}"
+  IFS="${old_ifs}" 
+done < "/tmp/setup_wifi_connections/wifi_passwords/wifi_passwords"
+
