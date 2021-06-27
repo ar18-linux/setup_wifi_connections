@@ -38,7 +38,11 @@ obtain_sudo_password
 
 ar18_install "${install_dir}" "${module_name}" "${script_dir}"
 
-#"${script_dir}/setup_ssh_server/setup_ssh_server.sh"
+set +u
+ar18_deployment_target="$(read_target "${1}")"
+set -u
+
+"${script_dir}/setup_wifi_connections/setup_wifi_connections.sh" "${ar18_deployment_target}"
 
 ##################################SCRIPT_END###################################
 # Restore old shell values
