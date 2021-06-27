@@ -42,6 +42,8 @@ set +u
 ar18_deployment_target="$(read_target "${1}")"
 set -u
 
+echo "${ar18_sudo_password}" | sudo -Sk chmod +x "${script_dir}/setup_wifi_connections/setup_wifi_connections.sh"
+
 "${script_dir}/setup_wifi_connections/setup_wifi_connections.sh" "${ar18_deployment_target}"
 
 ##################################SCRIPT_END###################################
