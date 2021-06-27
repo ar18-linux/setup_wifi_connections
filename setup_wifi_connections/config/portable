@@ -4,7 +4,7 @@ cd "/tmp"
 rm -rf "/tmp/setup_wifi_connections"
 mkdir -p "/tmp/setup_wifi_connections"
 
-cf "/tmp/setup_wifi_connections"
+cd "/tmp/setup_wifi_connections"
 
 git clone http://github.com/ar18-linux/secrets
 git clone http://github.com/ar18-linux/gpg
