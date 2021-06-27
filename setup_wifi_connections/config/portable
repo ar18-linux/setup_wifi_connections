@@ -14,9 +14,11 @@ rm -rf "/tmp/setup_wifi_connections/wifi_passwords"
 
 # Delete old connection of type 'wifi'
 uuids=$(nmcli connection show | grep wifi | grep -E -o '[0-9a-f\-]{36}')
-while IFS= read -r uuid; do 
-  echo "${ar18_sudo_password}" | sudo -Sk nmcli connection delete "${uuid}"; 
-done <<< "${uuids}"
+if [ "${uuids}" != "" ]; then
+  while IFS= read -r uuid; do 
+    echo "${ar18_sudo_password}" | sudo -Sk nmcli connection delete "${uuid}"; 
+  done <<< "${uuids}"
+fi
 
 while read line; do
   old_ifs="${IFS}"
