@@ -53,14 +53,17 @@
 }
 #################################SCRIPT_START##################################
 
-if [ ! -v ar18_helper_functions ]; then rm -rf "/tmp/helper_functions_$(whoami)"; cd /tmp; git clone https://github.com/ar18-linux/helper_functions.git; mv "/tmp/helper_functions" "/tmp/helper_functions_$(whoami)"; . "/tmp/helper_functions_$(whoami)/helper_functions/helper_functions.sh"; cd "${script_dir}"; export ar18_helper_functions=1; fi
-obtain_sudo_password
+ar18.script.import ar18.script.obtain_sudo_password
+ar18.script.import ar18.script.read_target
+ar18.script.import  ar18.script.source_or_execute_config
+
+ar18.script.obtain_sudo_password
 
 set +u
-ar18_deployment_target="$(read_target "${1}")"
+ar18_deployment_target="$(ar18.script.read_target "${1}")"
 set -u
 
-source_or_execute_config "execute" "setup_wifi_connections" "${ar18_deployment_target}"
+#ar18.script.source_or_execute_config "execute" "setup_wifi_connections" "${ar18_deployment_target}"
 
 ##################################SCRIPT_END###################################
 # Restore environment
