@@ -183,14 +183,11 @@ trap 'err_report "${BASH_SOURCE[0]}" ${LINENO} "${BASH_COMMAND}"' ERR
 ar18.script.import ar18.script.obtain_sudo_password
 ar18.script.import ar18.script.read_target
 ar18.script.import  ar18.script.source_or_execute_config
+ar18.script.import ar18.script.execute_with_sudo
 
 ar18.script.obtain_sudo_password
 
-set +u
-ar18_deployment_target="$(ar18.script.read_target "${1}")"
-set -u
-
-#ar18.script.source_or_execute_config "execute" "setup_wifi_connections" "${ar18_deployment_target}"
+ar18.script.execute_with_sudo "${script_dir}/setup_wifi_connections_auto.sh"
 
 ##################################SCRIPT_END###################################
 set +x

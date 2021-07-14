@@ -180,21 +180,38 @@ trap 'err_report "${BASH_SOURCE[0]}" ${LINENO} "${BASH_COMMAND}"' ERR
 }
 #################################SCRIPT_START##################################
 
+function ar18_extra_cleanup(){
+  ar18.script.execute_with_sudo rm -rf "/tmp/setup_wifi_connections"
+}
+
 ar18.script.import ar18.script.install
 ar18.script.import ar18.script.read_target
 ar18.script.import ar18.script.execute_with_sudo
+ar18.script.import ar18.script.obtain_sudo_password
 
 . "${script_dir}/vars"
 
+ar18.script.obtain_sudo_password
+
+ar18.script.execute_with_sudo rm -rf "/tmp/setup_wifi_connections"
+mkdir -p "/tmp/setup_wifi_connections"
+
+cd "/tmp/setup_wifi_connections"
+
+git clone http://github.com/ar18-linux/secrets
+git clone http://github.com/ar18-linux/gpg
+
+ar18.script.execute_with_sudo sed -i "s/{{USER_NAME}}/${user_name}/g" "${script_dir}/${module_name}/${module_name}_auto.sh"
+ar18.script.execute_with_sudo sed -i "s/{{MODULE_NAME}}/${module_name}/g" "${script_dir}/${module_name}/${module_name}_auto.sh"
+
 ar18.script.install "${install_dir}" "${module_name}" "${script_dir}"
 
-set +u
-ar18_deployment_target="$(ar18.script.read_target "${1}")"
-set -u
+"/tmp/setup_wifi_connections/gpg/gpg/decrypt.sh" "/tmp/setup_wifi_connections/secrets/secrets/wifi_passwords.gpg" "/tmp/setup_wifi_connections/wifi_passwords" "${ar18_sudo_password}"
 
-ar18.script.execute_with_sudo chmod +x "${script_dir}/setup_wifi_connections/setup_wifi_connections.sh"
-
-"${script_dir}/setup_wifi_connections/setup_wifi_connections.sh" "${ar18_deployment_target}"
+mkdir -p "/home/${user_name}/.config/ar18/secrets"
+mv -f "/tmp/setup_wifi_connections/wifi_passwords/wifi_passwords" "/home/${user_name}/.config/ar18/secrets/wifi_passwords"
+ar18.script.execute_with_sudo chown root:root "/home/${user_name}/.config/ar18/secrets/wifi_passwords"
+ar18.script.execute_with_sudo chmod 0600 "/home/${user_name}/.config/ar18/secrets/wifi_passwords"
 
 ##################################SCRIPT_END###################################
 set +x

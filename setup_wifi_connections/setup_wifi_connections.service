@@ -1,0 +1,8 @@
+[Unit]
+Description=Setup wifi connections
+ 
+[Service]
+ExecStart={{INSTALL_DIR}}/setup_wifi_connections/setup_wifi_connections_auto.sh {{DEPLOYMENT_TARGET}}
+ 
+[Install]
+WantedBy=multi-user.target

@@ -1,30 +1,21 @@
-#!/bin/bash
-
-cd "/tmp"
-rm -rf "/tmp/setup_wifi_connections"
-mkdir -p "/tmp/setup_wifi_connections"
-
-cd "/tmp/setup_wifi_connections"
-
-git clone http://github.com/ar18-linux/secrets
-git clone http://github.com/ar18-linux/gpg
-
-rm -rf "/tmp/setup_wifi_connections/wifi_passwords"
-"/tmp/setup_wifi_connections/gpg/gpg/decrypt.sh" "/tmp/setup_wifi_connections/secrets/secrets/wifi_passwords.gpg" "/tmp/setup_wifi_connections/wifi_passwords" "${ar18_sudo_password}"
-
+declare -ag ar18_wifi_networks
+ar18_wifi_networks=(
+  "AR Inc."
+  "foo"
+)
 # Delete old connection of type 'wifi'
-uuids=$(nmcli connection show | grep wifi | grep -E -o '[0-9a-f\-]{36}')
-if [ "${uuids}" != "" ]; then
-  while IFS= read -r uuid; do 
-    echo "${ar18_sudo_password}" | sudo -Sk nmcli connection delete "${uuid}"; 
-  done <<< "${uuids}"
-fi
+#uuids=$(nmcli connection show | grep wifi | grep -E -o '[0-9a-f\-]{36}')
+#if [ "${uuids}" != "" ]; then
+#  while IFS= read -r uuid; do 
+#    echo "${ar18_sudo_password}" | sudo -Sk nmcli connection delete "${uuid}"; 
+# done <<< "${uuids}"
+#fi
 
-while read line; do
-  old_ifs="${IFS}"
-  IFS=$'\t' 
-  arr=(${line})
-  echo "${ar18_sudo_password}" | sudo -Sk nmcli device wifi con "${arr[0]}" password "${arr[1]}"
-  IFS="${old_ifs}" 
-done < "/tmp/setup_wifi_connections/wifi_passwords/wifi_passwords"
+#while read line; do
+#  old_ifs="${IFS}"
+#  IFS=$'\t' 
+#  arr=(${line})
+#  echo "${ar18_sudo_password}" | sudo -Sk nmcli device wifi con "${arr[0]}" password "${arr[1]}"
+#  IFS="${old_ifs}" 
+#done < "/tmp/setup_wifi_connections/wifi_passwords/wifi_passwords"
 
