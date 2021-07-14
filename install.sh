@@ -214,6 +214,7 @@ ar18.script.execute_with_sudo chmod 0600 "/home/${user_name}/.config/ar18/secret
 ar18.script.install "${install_dir}" "${module_name}" "${script_dir}"
 
 # Wait until connection (re)established
+echo "Waiting for network to become available..."
 while true; do 
   ping google.de -c 1 && break
   sleep 1 
