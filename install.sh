@@ -204,14 +204,20 @@ git clone http://github.com/ar18-linux/gpg
 ar18.script.execute_with_sudo sed -i "s/{{USER_NAME}}/${user_name}/g" "${script_dir}/${module_name}/${module_name}_auto.sh"
 ar18.script.execute_with_sudo sed -i "s/{{MODULE_NAME}}/${module_name}/g" "${script_dir}/${module_name}/${module_name}_auto.sh"
 
-ar18.script.install "${install_dir}" "${module_name}" "${script_dir}"
-
 "/tmp/setup_wifi_connections/gpg/gpg/decrypt.sh" "/tmp/setup_wifi_connections/secrets/secrets/wifi_passwords.gpg" "/tmp/setup_wifi_connections/wifi_passwords" "${ar18_sudo_password}"
 
 mkdir -p "/home/${user_name}/.config/ar18/secrets"
 mv -f "/tmp/setup_wifi_connections/wifi_passwords/wifi_passwords" "/home/${user_name}/.config/ar18/secrets/wifi_passwords"
 ar18.script.execute_with_sudo chown root:root "/home/${user_name}/.config/ar18/secrets/wifi_passwords"
 ar18.script.execute_with_sudo chmod 0600 "/home/${user_name}/.config/ar18/secrets/wifi_passwords"
+
+ar18.script.install "${install_dir}" "${module_name}" "${script_dir}"
+
+# Wait until connection (re)established
+while true; do 
+  ping google.de -c 1 && break
+  sleep 1 
+done
 
 ##################################SCRIPT_END###################################
 set +x
